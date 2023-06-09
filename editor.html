@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>JSON Validator</title>
+  </head>
+  <body>
+    <!-- copy the following three blocks (style, div, script) into a WordPress Divi "code" block -->
+    <!-- then, change the JS import line to https://josdejong.github.io/json-validator/index.js -->
+
+    <style>
+      #json-schema-validator {
+        display: flex;
+        width: 100%;
+        max-width: 1000px;
+        height: 400px;
+      }
+    </style>
+
+    <div id="json-validator">
+      <span class="loading">Loading editor...</span>
+    </div>
+
+    <script type="module">
+      // import { Editor } from 'https://josdejong.github.io/json-validator/index.js'
+      import { Editor } from './docs/index.js'
+
+      const content = {
+        text: `{
+  name: "Joe"
+  age: 42
+  scores: [31.4,29.9,35.7]
+  winner: false
+}`
+      }
+
+      const target = document.getElementById('json-validator')
+      const editor = new Editor({ target, props: { content } })
+      const loading = target.querySelector('span.loading')
+      target.removeChild(loading)
+    </script>
+  </body>
+</html>
