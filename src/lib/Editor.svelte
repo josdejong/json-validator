@@ -78,9 +78,7 @@
 
 <style lang="scss">
   .json-validator {
-    width: 100%;
-    max-width: 800px;
-    height: 300px;
+    flex: 1;
     display: flex;
     flex-direction: column;
 
@@ -89,14 +87,14 @@
       min-width: 0;
       min-height: 0;
     }
-  }
 
-  .json-validator-status-valid {
-    font-family: var(--jse-font-family);
-    font-size: var(--jse-font-size);
-    background: var(--jse-message-success-background);
-    color: var(--jse-message-success-color);
-    padding: var(--jse-padding);
+    .json-validator-status-valid {
+      font-family: var(--jse-font-family);
+      font-size: var(--jse-font-size);
+      background: var(--jse-message-success-background);
+      color: var(--jse-message-success-color);
+      padding: var(--jse-padding);
+    }
   }
 
   :global(.jse-menu) {
