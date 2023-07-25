@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>JSON Example</title>
+  </head>
+  <body>
+    <!-- copy the following three blocks (style, div, script) into a WordPress Divi "code" block -->
+
+    <style>
+      .json-validator-geo {
+        width: 800px;
+        max-width: 100%;
+        max-height: 400px;
+        display: flex;
+      }
+
+      .jsoneditor-fallback {
+        border: 1px solid #e5e5e5;
+        background: #f5f5f5;
+        padding: 10px;
+        font-family: monospace;
+        font-size: inherit;
+      }
+
+      .json-validator-geo pre {
+        margin: 0;
+      }
+    </style>
+
+    <div class="json-validator-geo jsoneditor-fallback">
+      <pre>
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [4.483605784808901, 51.907188449679325]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [3.974369110811523 , 51.907355547778565],
+            [4.173944459020191 , 51.86237166892457 ],
+            [4.3808076710679416, 51.848867725914914],
+            [4.579822414365026 , 51.874487141880024],
+            [4.534413416598767 , 51.9495302480326  ],
+            [4.365110733567974 , 51.92360787140825 ],
+            [4.179550508127079 , 51.97336560819281 ],
+            [4.018096293847009 , 52.00236546429852 ],
+            [3.9424146309028174, 51.97681895676649 ],
+            [3.974369110811523 , 51.907355547778565]
+          ]
+        ]
+      }
+    }
+  ]
+}
+      </pre>
+    </div>
+
+    <script type="module">
+      const { Editor } = await import('https://josdejong.github.io/json-validator/index.js')
+
+      Array.from(document.querySelectorAll('.json-validator-geo pre')).forEach((pre) => {
+        const target = pre.parentNode
+        const text = pre.innerText
+
+        try {
+          const editor = new Editor({
+            target,
+            props: {
+              content: { text },
+              showIsValidMessage: false,
+              onRenderMenu: (items) => {
+                const lastItem = items[items.length - 1]
+                lastItem.text = 'Open in geojson.io'
+                lastItem.onClick = () => {
+                  const content = editor.get()
+                  const text =
+                    content.text !== undefined
+                      ? content.text
+                      : JSON.stringify(content.json, null, 2)
+                  window.open(
+                    'https://geojson.io/#data=data:application/json,' + encodeURIComponent(text)
+                  )
+                }
+                return items
+              }
+            }
+          })
+          target.removeChild(pre)
+          target.classList.toggle('jsoneditor-fallback', false)
+        } catch (err) {
+          console.error(err)
+        }
+      })
+    </script>
+  </body>
+</html>

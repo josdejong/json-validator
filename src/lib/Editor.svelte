@@ -20,6 +20,10 @@
 
   const copiedVisibleDuration = 700 // ms
 
+  export function get() {
+    return content
+  }
+
   function handleCopy() {
     navigator.clipboard.writeText(toTextContent(content).text).catch((err) => console.error(err))
 
