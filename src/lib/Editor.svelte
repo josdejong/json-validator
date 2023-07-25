@@ -61,9 +61,9 @@
           type: 'button',
           onClick: handleOpenExternal,
           icon: faArrowUpRightFromSquare,
-          text: 'Open in full editor',
+          text: 'Edit in JSON Editor Online',
           title:
-            'Open the data in the full JSON Editor where you can sort, transform, query, compare and more',
+            'Open the document in JSON Editor Online where you can sort, transform, query, compare and more',
           className: 'jse-beautify'
         }
       ]
