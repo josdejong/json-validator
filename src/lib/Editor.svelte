@@ -13,6 +13,7 @@
 
   export let content: Content = { text: '' }
   export let onRenderMenu: OnRenderMenu | undefined = undefined
+  export let showIsValidMessage = true
 
   let copied = false
   let isValid = false // TODO: initialize correctly
@@ -86,7 +87,7 @@
       onChange={handleChange}
     />
   </div>
-  {#if isValid}
+  {#if isValid && showIsValidMessage}
     <div class="json-validator-status-valid">
       <Icon data={faCheck} /> JSON document is valid
     </div>

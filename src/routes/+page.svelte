@@ -3,6 +3,7 @@
   import { Editor } from '$lib/index.js'
 
   const useOnRenderMenu = false
+  const showIsValidMessage = true
 
   let editorRef: HTMLDivElement
 
@@ -20,6 +21,7 @@
       target: editorRef,
       props: {
         content,
+        showIsValidMessage,
         onRenderMenu: useOnRenderMenu
           ? (items) => items.slice(0, 1) // remove the "Open in full editor" button just to see that onRenderMenu works
           : undefined
