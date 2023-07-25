@@ -56,14 +56,14 @@
       const { Editor } = await import('https://josdejong.github.io/json-validator/index.js')
 
       Array.from(document.querySelectorAll('.json-validator pre')).forEach((pre) => {
-        const target = pre.parentNode
-        const text = pre.innerText.trim()
-
         try {
+          const target = pre.parentNode
           const editor = new Editor({
             target,
             props: {
-              content: { text },
+              content: {
+                text: pre.innerText.trim()
+              },
               showIsValidMessage: false
             }
           })

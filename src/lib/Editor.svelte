@@ -1,8 +1,9 @@
 <script lang="ts">
   import type {
     Content,
-    MenuItem,
     MenuButton,
+    MenuItem,
+    OnChange,
     OnChangeStatus,
     OnRenderMenu,
     RenderMenuContext
@@ -12,6 +13,7 @@
   import { Icon } from 'svelte-awesome'
 
   export let content: Content = { text: '' }
+  export let onChange: OnChange | undefined = undefined
   export let onRenderMenu: OnRenderMenu | undefined = undefined
   export let showIsValidMessage = true
 
@@ -19,10 +21,6 @@
   let isValid = false // TODO: initialize correctly
 
   const copiedVisibleDuration = 700 // ms
-
-  export function get() {
-    return content
-  }
 
   function handleCopy() {
     navigator.clipboard.writeText(toTextContent(content).text).catch((err) => console.error(err))
@@ -33,7 +31,8 @@
 
   function handleOpenExternal() {
     // TODO: throw a warning when text is too large to be copied via url (2000 chars?)
-    window.open('https://jsoneditoronline.org/#left=json.' + encodeURI(toTextContent(content).text))
+    const text = toTextContent(content).text
+    window.open(`https://jsoneditoronline.org/#left=json.${encodeURIComponent(text)}`)
   }
 
   function createHandleRenderMenu(copied: boolean, onRenderMenu: OnRenderMenu | undefined) {
@@ -72,12 +71,12 @@
     }
   }
 
-  function handleChange(
-    updatedContent: Content,
-    previousContent: Content,
-    { contentErrors }: OnChangeStatus
-  ) {
-    isValid = !contentErrors
+  function handleChange(updatedContent: Content, previousContent: Content, status: OnChangeStatus) {
+    isValid = !status.contentErrors
+
+    if (onChange) {
+      onChange(updatedContent, previousContent, status)
+    }
   }
 </script>
 
@@ -86,7 +85,7 @@
     <JSONEditor
       mode={Mode.text}
       statusBar={false}
-      {content}
+      bind:content
       onRenderMenu={createHandleRenderMenu(copied, onRenderMenu)}
       onChange={handleChange}
     />

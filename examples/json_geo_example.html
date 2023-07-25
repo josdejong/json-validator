@@ -72,12 +72,13 @@
       const { Editor } = await import('https://josdejong.github.io/json-validator/index.js')
 
       Array.from(document.querySelectorAll('.json-validator-geo pre')).forEach((pre) => {
-        const target = pre.parentNode
-        let content = {
-          text: pre.innerText.trim()
-        }
-
         try {
+          let content = {
+            text: pre.innerText.trim()
+          }
+
+          const target = pre.parentNode
+
           const editor = new Editor({
             target,
             props: {
@@ -90,7 +91,7 @@
                 const lastItem = items[items.length - 1]
                 lastItem.text = 'Edit in geojson.io'
                 lastItem.onClick = () => {
-                  const text = encodeURIComponent(getTextContent(content))
+                  const text = encodeURIComponent(getText(content))
                   const data = `data:application/json,${text}`
                   window.open(`https://geojson.io/#data=${data}`)
                 }
@@ -105,7 +106,7 @@
         }
       })
 
-      function getTextContent(content) {
+      function getText(content) {
         return content.text !== undefined ? content.text : JSON.stringify(content.json, null, 2)
       }
     </script>
