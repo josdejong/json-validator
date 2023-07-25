@@ -21,6 +21,7 @@
         padding: 10px;
         font-family: monospace;
         font-size: inherit;
+        overflow: auto;
       }
 
       .json-validator pre {
@@ -56,7 +57,7 @@
 
       Array.from(document.querySelectorAll('.json-validator pre')).forEach((pre) => {
         const target = pre.parentNode
-        const text = pre.innerText
+        const text = pre.innerText.trim()
 
         try {
           const editor = new Editor({

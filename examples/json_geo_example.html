@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>JSON Example</title>
+    <title>GeoJSON Example</title>
   </head>
   <body>
     <!-- copy the following three blocks (style, div, script) into a WordPress Divi "code" block -->
@@ -21,6 +21,7 @@
         padding: 10px;
         font-family: monospace;
         font-size: inherit;
+        overflow: auto;
       }
 
       .json-validator-geo pre {
@@ -72,26 +73,26 @@
 
       Array.from(document.querySelectorAll('.json-validator-geo pre')).forEach((pre) => {
         const target = pre.parentNode
-        const text = pre.innerText
+        let content = {
+          text: pre.innerText.trim()
+        }
 
         try {
           const editor = new Editor({
             target,
             props: {
-              content: { text },
+              content,
               showIsValidMessage: false,
+              onChange: (updatedContent) => {
+                content = updatedContent
+              },
               onRenderMenu: (items) => {
                 const lastItem = items[items.length - 1]
-                lastItem.text = 'Open in geojson.io'
+                lastItem.text = 'Edit in geojson.io'
                 lastItem.onClick = () => {
-                  const content = editor.get()
-                  const text =
-                    content.text !== undefined
-                      ? content.text
-                      : JSON.stringify(content.json, null, 2)
-                  window.open(
-                    'https://geojson.io/#data=data:application/json,' + encodeURIComponent(text)
-                  )
+                  const text = encodeURIComponent(getTextContent(content))
+                  const data = `data:application/json,${text}`
+                  window.open(`https://geojson.io/#data=${data}`)
                 }
                 return items
               }
@@ -103,6 +104,10 @@
           console.error(err)
         }
       })
+
+      function getTextContent(content) {
+        return content.text !== undefined ? content.text : JSON.stringify(content.json, null, 2)
+      }
     </script>
   </body>
 </html>
