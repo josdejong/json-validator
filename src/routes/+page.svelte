@@ -2,7 +2,9 @@
   import { onMount } from 'svelte'
   import { Editor } from '$lib/index.js'
 
-  let editorRef
+  const useOnRenderMenu = false
+
+  let editorRef: HTMLDivElement
 
   const content = {
     text: `{
@@ -14,7 +16,15 @@
   }
 
   onMount(() => {
-    const testEditor = new Editor({ target: editorRef, props: { content } })
+    const testEditor = new Editor({
+      target: editorRef,
+      props: {
+        content,
+        onRenderMenu: useOnRenderMenu
+          ? (items) => items.slice(0, 1) // remove the "Open in full editor" button just to see that onRenderMenu works
+          : undefined
+      }
+    })
   })
 </script>
 

@@ -1,9 +1,18 @@
 <script lang="ts">
-  import { type Content, JSONEditor, toTextContent } from 'svelte-jsoneditor'
+  import type {
+    Content,
+    MenuItem,
+    MenuButton,
+    OnChangeStatus,
+    OnRenderMenu,
+    RenderMenuContext
+  } from 'svelte-jsoneditor'
+  import { JSONEditor, Mode, toTextContent } from 'svelte-jsoneditor'
   import { faArrowUpRightFromSquare, faCheck, faCopy } from '@fortawesome/free-solid-svg-icons'
   import { Icon } from 'svelte-awesome'
 
   export let content: Content = { text: '' }
+  export let onRenderMenu: OnRenderMenu | undefined = undefined
 
   let copied = false
   let isValid = false // TODO: initialize correctly
@@ -22,17 +31,18 @@
     window.open('https://jsoneditoronline.org/#left=json.' + encodeURI(toTextContent(content).text))
   }
 
-  function createHandleRenderMenu(copied) {
-    return function handleRenderMenu(items) {
-      const formatButton = items.find((item) => item.title?.startsWith('Format'))
+  function createHandleRenderMenu(copied: boolean, onRenderMenu: OnRenderMenu | undefined) {
+    return function handleRenderMenu(items: MenuItem[], context: RenderMenuContext) {
+      const formatButton = items.find((item) => (item as MenuButton).title?.startsWith('Format'))
 
       if (!formatButton) {
         console.error('format button not found, cannot create custom menu')
         return items
       }
 
-      return [
+      const customItems: MenuItem[] = [
         {
+          type: 'button',
           onClick: handleCopy,
           icon: faCopy,
           text: copied ? 'Copied!' : 'Copy',
@@ -40,9 +50,10 @@
           className: 'jse-beautify menu-button-copy'
         },
         {
-          space: true
+          type: 'space'
         },
         {
+          type: 'button',
           onClick: handleOpenExternal,
           icon: faArrowUpRightFromSquare,
           text: 'Open in full editor',
@@ -51,10 +62,16 @@
           className: 'jse-beautify'
         }
       ]
+
+      return onRenderMenu ? onRenderMenu(customItems, context) || customItems : customItems
     }
   }
 
-  function handleChange(updatedContent, previousContent, { contentErrors }) {
+  function handleChange(
+    updatedContent: Content,
+    previousContent: Content,
+    { contentErrors }: OnChangeStatus
+  ) {
     isValid = !contentErrors
   }
 </script>
@@ -62,10 +79,10 @@
 <div class="json-validator">
   <div class="json-validator-editor">
     <JSONEditor
-      mode="text"
+      mode={Mode.text}
       statusBar={false}
       {content}
-      onRenderMenu={createHandleRenderMenu(copied)}
+      onRenderMenu={createHandleRenderMenu(copied, onRenderMenu)}
       onChange={handleChange}
     />
   </div>
