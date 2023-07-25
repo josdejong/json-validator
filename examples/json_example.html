@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>JSON Validator</title>
+  </head>
+  <body>
+    <!-- copy the following three blocks (style, div, script) into a WordPress Divi "code" block -->
+
+    <style>
+      .json-validator {
+        width: 800px;
+        max-width: 100%;
+        max-height: 400px;
+        display: flex;
+      }
+
+      .jsoneditor-loading,
+      .jsoneditor-fallback {
+        border: 1px solid #e5e5e5;
+        background: #f5f5f5;
+        padding: 10px;
+      }
+
+      .jsoneditor-fallback {
+        font-family: monospace;
+        font-size: inherit;
+        white-space: pre;
+        max-height: none;
+      }
+    </style>
+
+    <div class="json-validator jsoneditor-loading">
+      <span class="loading">Loading editor...</span>
+    </div>
+
+    <script type="module">
+      const text = `{
+  "name": "Chris",
+  "age": 23,
+  "address": {
+    "city": "New York",
+    "country": "America"
+  },
+  "friends": [
+    {
+      "name": "Emily",
+      "hobbies": [ "biking", "music", "gaming" ]
+    },
+    {
+      "name": "John",
+      "hobbies": [ "soccer", "gaming" ]
+    }
+  ]
+}
+`
+      const target = Array.from(document.querySelectorAll('.json-validator')).pop()
+
+      try {
+        const { Editor } = await import('https://josdejong.github.io/json-validator/index.js')
+
+        const editor = new Editor({
+          target,
+          props: {
+            content: { text },
+            showIsValidMessage: false
+          }
+        })
+        target.classList.toggle('jsoneditor-loading', false)
+        const loading = target.querySelector('span.loading')
+        target.removeChild(loading)
+      } catch (err) {
+        console.error(err)
+        target.innerText = text
+        target.classList.toggle('jsoneditor-loading', false)
+        target.classList.toggle('jsoneditor-fallback', true)
+      }
+    </script>
+  </body>
+</html>
